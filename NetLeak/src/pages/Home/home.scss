@@ -1,0 +1,14 @@
+.home-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #232323;
+  position: relative;
+  backdrop-filter: blur(100px);
+  .movies-slide {
+    z-index: 3;
+    width: 100%;
+  }
+}

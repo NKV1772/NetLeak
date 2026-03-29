@@ -1,0 +1,74 @@
+.slide-container {
+  width: 100%;
+  height: auto;
+  margin-bottom: 50px;
+  .topslide-title {
+    font-size: 30px !important;
+  }
+  .film-name {
+    margin-left: 10px;
+
+    font-size: 15px;
+    font-weight: 500;
+  }
+  p {
+    margin-left: 70px;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .ok2 {
+    margin-left: 100px;
+  }
+  img {
+    width: 95%;
+    height: 300px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: auto; /* Căn giữa hình ảnh */
+    display: block;
+    filter: brightness(95%);
+    &:hover {
+      filter: brightness(110%);
+    }
+  }
+
+  .mySwiper {
+    padding-right: 20px;
+    padding-left: 20px;
+
+    .number {
+      padding-left: 0px !important;
+      align-items: center;
+      width: 120%;
+      height: 120%;
+      cursor: auto;
+      &:hover {
+        transform: none !important;
+      }
+    }
+  }
+
+  .swiper-Slide {
+    transition: transform 0.3s ease;
+    position: relative; /* Thêm hiệu ứng chuyển động */
+    // display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      .film-name {
+        color: rgb(34, 197, 94);
+      }
+      .number {
+        filter: brightness(95%);
+      }
+    }
+  }
+}
+.no-hover-effect:hover {
+  transform: none !important;
+  filter: brightness(
+    95%
+  ) !important; /* Đảm bảo màu sắc không thay đổi khi hover */
+}

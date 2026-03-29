@@ -1,0 +1,1 @@
+.hoverslide-container{position:relative;width:95%;height:95%}.hoverslide-container img{position:absolute;width:95%;height:auto;border-radius:10px;cursor:pointer;transition:.3s;filter:brightness(95%)}.hoverslide-container img:hover{filter:brightness(110%)}.hoverslide-container .ok{width:95%;height:95%;position:absolute;background-color:red}

@@ -1,0 +1,117 @@
+.image-overlay1 {
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  width: 15%;
+  height: 100%; /* Adjust the height of the overlay as needed */
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0) 20%,
+    rgba(35, 35, 35, 1) 100%
+  );
+}
+.image-overlay2 {
+  z-index: 1;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 10%; /* Adjust the height of the overlay as needed */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 10%,
+    rgba(35, 35, 35, 1) 90%
+  );
+}
+.image-overlay3 {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 10%; /* Adjust the height of the overlay as needed */
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0) 0,
+    rgba(35, 35, 35, 1) 100%
+  );
+}
+.image-overlay4 {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  width: 15%;
+  height: 100%; /* Adjust the height of the overlay as needed */
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 20%,
+    rgba(35, 35, 35, 1) 100%
+  );
+}
+.movie-detail {
+  z-index: 5;
+  height: auto;
+}
+.rating-container {
+  .rating {
+    cursor: pointer;
+    &:hover {
+      filter: brightness(150%);
+    }
+  }
+}
+.movie-tag {
+  li {
+    transition: 0.2s;
+    &:hover {
+      background-color: gray;
+    }
+  }
+}
+.access {
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  button {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    transition: 0.2s;
+    p {
+      font-size: 17px;
+      font-weight: 700;
+      margin-left: 10px;
+    }
+    .icon {
+      font-size: 20px;
+    }
+    &:hover {
+      background-color: red;
+      p,
+      .icon {
+        color: white;
+      }
+    }
+  }
+  .play {
+    margin-right: 20px;
+    background-color: white;
+    p,
+    .icon {
+      color: #232323;
+    }
+  }
+  .playlist {
+    background-color: #6e6e6e;
+    p,
+    .icon {
+      color: white;
+    }
+  }
+}

@@ -1,0 +1,140 @@
+.grid-container {
+  display: grid;
+  grid-gap: 10px;
+  position: relative;
+  grid-auto-rows: minmax(auto, max-content);
+
+  justify-content: center;
+}
+
+p {
+  // margin-left: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+@media screen and (min-width: 471px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 200px));
+  }
+}
+
+/* Hiển thị 2 cột cho màn hình điện thoại */
+@media screen and (max-width: 470px) {
+  .grid-container {
+    grid-template-columns: repeat(2, minmax(175px, 175px));
+  }
+}
+
+.listcard {
+  position: relative;
+  margin: 5px;
+
+  /* Đặt vị trí tương đối cho listcard */
+
+  &:hover {
+    .film-title {
+      // transform: translateY(100px);
+
+      color: rgb(34, 197, 94);
+    }
+  }
+
+  .film-description {
+    opacity: 0;
+  }
+}
+
+.listcard img {
+  width: 100%; /* Đảm bảo ảnh chiếm toàn bộ chiều rộng của phần tử cha */
+  height: 300px;
+  object-fit: cover; /* Cắt ảnh nếu dư để đảm bảo đủ kích thước */
+  cursor: pointer;
+  border-radius: 10px;
+  filter: brightness(95%);
+}
+
+.listcard.hovered {
+  z-index: 3;
+  width: 170%;
+  height: auto;
+  background-color: black;
+  border-radius: 10px;
+  transform: translateY(-15%);
+  left: -40%;
+  transition-duration: 1s;
+
+  // transition: left ;
+  padding-bottom: 5px;
+
+  img {
+    height: auto;
+    max-height: 200px;
+  }
+
+  .film-title {
+    opacity: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .flim-description {
+    position: absolute;
+    z-index: 3;
+
+    margin-top: -20%;
+  }
+
+  .image-overlay {
+    z-index: 2;
+    position: absolute;
+    // top: 0;
+    // position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 30%;
+    /* Adjust the height of the overlay as needed */
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(35, 35, 35, 0.9) 70%
+    );
+  }
+}
+
+.genre-title {
+  font-size: 40px !important;
+  margin-left: 10px;
+  color: rgb(255, 255, 255) !important;
+  display: inline-block;
+  font-weight: 700;
+  padding: 2px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-bottom: 20px;
+  border-bottom-width: 5px; /* Thêm gạch chân */
+  border-bottom-color: #de6262; /* Chỉnh màu cho gạch chân */
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 25px;
+}
+.cancel-icon {
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  color: white;
+  right: 0;
+  padding: 5px;
+  cursor: pointer;
+  &:hover {
+    color: red;
+  }
+}
