@@ -19,9 +19,8 @@ const Footer = () => {
                 <h3>Về chúng tôi</h3>
                 <ul>
                     <li>23521772 - Nguyễn Khánh Vân</li>
-                    <li>23521025 - Huỳnh Bích Ngọc</li>
-                    <li>23521029 - Nguyễn Bảo Ngọc</li>
-                    <li>23520544 - Trương Huy Hoàng</li>
+                    <li>23521832 - Nguyễn Khánh Vy</li>
+                    <li>23521619 - Trần Thị Kiều Trâm</li>
                 </ul>
             </li>
         </ul>

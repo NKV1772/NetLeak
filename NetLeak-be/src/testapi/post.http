@@ -3,10 +3,10 @@ POST http://localhost:8081/v1/api/signup
 Content-Type: application/json
 
 {
-    "email": "trannhutphattv123@gmail.com",
-    "password": "phat1234544",
-    "name": "phat",
-    "sexuality": "male",
+    "email": "23521772@gm.uit.edu.vn",
+    "password": "1525090838",
+    "name": "van",
+    "sexuality": "female",
     "phone": "123456789"
 }
 ### LOGIN
@@ -14,8 +14,8 @@ POST http://localhost:8081/v1/api/login
 Content-Type: application/json
 
 {
-    "email": "trannhutphattv@gmail.com",
-    "password": "phat123456"
+    "email": "23521772@gm.uit.edu.vn",
+    "password": "1525090838"
 }
 
 ### REFRESH TOKEN

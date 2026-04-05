@@ -41,15 +41,11 @@ const Footer = () => {
                     </li>
 
                     <li className='hover:text-[red] hover:scale-[1.1] '>
-                        23521025 - Huỳnh Bích Ngọc
+                        23521832 - Nguyễn Khánh Vy
                     </li>
 
                     <li className='hover:text-[red] hover:scale-[1.1] '>
-                        23521029 - Nguyễn Bảo Ngọc
-                    </li>
-
-                    <li className='hover:text-[red] hover:scale-[1.1] '>
-                        23520544 - Trương Huy Hoàng
+                        23521619 - Trần Thị Kiều Trâm
                     </li>
                 </ul>
             </li>

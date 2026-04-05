@@ -21,7 +21,7 @@ const Thumbnail = () => {
     const [topMovies, setTopMovies] = useState([]);
 
 
-    const TopMovies = ["662fa2a8db4524f20df792c5", "662f837cd772d69dd48aeac2", "6630a66c1a3d60de19e9d1a7", "662f8b764a2e36c1894656e6", "6630a28e1a3d60de19e9d110"]
+    const TopMovies = ["69ca1a1ca50a9fa40f82d878", "69ca1ccea50a9fa40f82d8e6", "69ca2323a50a9fa40f82d8ef", "69cde76b2f9133f8a87d3c79", "69cdd77a2f9133f8a87d3ab1"]
     useEffect(() => {
         const fetchMovieDetail = async () => {
             try {
