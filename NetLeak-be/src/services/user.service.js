@@ -8,7 +8,6 @@ const crypto = require('crypto');
 const https = require('https');
 const qs = require('querystring');
 const getData = require('../utils/formatRes');
-const { move, use } = require('../routes/user/user.route');
 
 class UserService {
     // [GET]/v1/api/user/listAllUsers

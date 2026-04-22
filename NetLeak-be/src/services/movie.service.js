@@ -13,7 +13,6 @@ const getName = require('../utils/getNameImage')
 const getData = require('../utils/formatRes')
 const _ = require('lodash');
 const CastService = require('./cast.service');
-const { getRecommend } = require('../controllers/user.controller');
 
 class MovieService {
     static addMovie = async (files, body) => {
@@ -115,6 +114,7 @@ class MovieService {
         try {
             const Movies = await movieModel.find({})
                 .populate("cast").populate("genres").populate("directors")
+                .lean()
 
             return Movies
         } catch (error) {
@@ -484,66 +484,12 @@ class MovieService {
         }
     }
 
-    static getRecommend = async ({ userId }) => {
-        try {
-            const user = await userModel.findById(userId)
-            if (!user) {
-                return {
-                    sucess: false,
-                    message: "User does not exist"
-                }
-            }
-
-            const history = await historyModel.findOne({ userId: userId }).populate('filmId')
-
-            const watchedFilms = history.filmId
-            let genreList = []
-
-            watchedFilms.splice(0, watchedFilms.length - 30)
-
-            watchedFilms.forEach((film) => {
-                genreList = [...genreList, ...film.genres]
-            })
-
-            let recommendedFilms = []
-            const allFilms = await movieModel.find()
-
-            //de xuat 15 bo
-            // for (let i = 0; i < 15; i++) {
-            //NÀY CHƯA CÓ DATA NÊN TEST
-            for (let i = 0; i < 2; i++) {
-                const ranNumGenre = Math.floor(Math.random() * genreList.length)
-
-                do {
-                    const ranNumFilm = Math.floor(Math.random() * allFilms.length)
-
-                    if (allFilms[ranNumFilm].genres.some(genre => genre.toString() == genreList[ranNumGenre].toString())) {
-                        if (
-                            recommendedFilms.some(id => {
-                                return id.toString() == allFilms[ranNumFilm]._id.toString()
-                            })
-                        ) { }
-                        else {
-                            recommendedFilms.push(allFilms[ranNumFilm]._id)
-                            break
-                        }
-                    }
-
-                }
-                while (true)
-            }
-            return recommendedFilms
-        } catch (error) {
-            return {
-                success: false,
-                message: error.message
-            }
-        }
-    }
-
     static getRecommendFromFavorite = async ({ userId }) => {
         try {
-            const user = await userModel.findById(userId).populate('favorites')
+            const user = await userModel.findById(userId).populate({
+                path: 'favorites',
+                select: 'genres _id',
+            }).lean()
             if (!user) {
                 return {
                     sucess: false,
@@ -551,70 +497,64 @@ class MovieService {
                 }
             }
 
-            const favoriteFilm = user.favorites
+            const favoriteFilm = user.favorites || []
+            const recommendedFilms = []
+            const targetCount = 15
+            const favoriteIds = favoriteFilm.map((f) => f._id)
 
-            const allFilms = await movieModel.find()
-
-            let recommendedFilms = []
-
-            if (favoriteFilm.length != 0) {
-
-                let genreList = []
-
-                // favoriteFilm.splice(0, favoriteFilm.length - 30)
-
-                favoriteFilm.forEach((film) => {
-                    genreList = [...genreList, ...film.genres]
-                })
-
-                //de xuat 15 bo
-                for (let i = 0; i < 15; i++) {
-                    //NÀY CHƯA CÓ DATA NÊN TEST
-                    // for (let i = 0; i < 2; i++) {
-                    const ranNumGenre = Math.floor(Math.random() * genreList.length)
-
-                    do {
-                        const ranNumFilm = Math.floor(Math.random() * allFilms.length)
-
-                        if (allFilms[ranNumFilm].genres.some(genre => genre.toString() == genreList[ranNumGenre].toString())) {
-                            if (
-                                recommendedFilms.some(id => {
-                                    return id.toString() == allFilms[ranNumFilm]._id.toString()
-                                })
-                            ) { }
-                            else {
-                                recommendedFilms.push(allFilms[ranNumFilm]._id)
-                                break
-                            }
-                        }
-
-                    }
-                    while (true)
-                }
+            const pushUnique = (filmId) => {
+                const s = filmId.toString()
+                if (recommendedFilms.some((id) => id.toString() === s)) return false
+                if (favoriteIds.some((id) => id.toString() === s)) return false
+                recommendedFilms.push(filmId)
+                return true
             }
-            else {
-                for (let i = 0; i < 15; i++) {
-                    //NÀY CHƯA CÓ DATA NÊN TEST
-                    // for (let i = 0; i < 2; i++) {
-                    // const ranNumGenre = Math.floor(Math.random() * genreList.length)
 
-                    do {
-                        const ranNumFilm = Math.floor(Math.random() * allFilms.length)
+            if (favoriteFilm.length > 0) {
+                const genreList = [
+                    ...new Set(
+                        favoriteFilm.flatMap((f) => (f.genres || []).map((g) => g.toString()))
+                    ),
+                ].map((id) => new mongoose.Types.ObjectId(id))
 
-                        // if (allFilms[ranNumFilm].genres.some(genre => genre.toString() == genreList[ranNumGenre].toString())) {
-                            if (
-                                recommendedFilms.some(id => {
-                                    return id.toString() == allFilms[ranNumFilm]._id.toString()
-                                })
-                            ) { }
-                            else {
-                                recommendedFilms.push(allFilms[ranNumFilm]._id)
-                                break
-                            }
-                        // }
-
+                if (genreList.length === 0) {
+                    const count = await movieModel.countDocuments()
+                    const size = Math.min(40, Math.max(1, count))
+                    const sample = await movieModel.aggregate([
+                        { $sample: { size } },
+                        { $project: { _id: 1 } },
+                    ])
+                    for (const doc of sample) {
+                        if (recommendedFilms.length >= targetCount) break
+                        pushUnique(doc._id)
                     }
-                    while (true)
+                    return recommendedFilms
+                }
+
+                let attempts = 0
+                const maxAttempts = 100
+                while (recommendedFilms.length < targetCount && attempts < maxAttempts) {
+                    attempts++
+                    const gid = genreList[Math.floor(Math.random() * genreList.length)]
+                    const found = await movieModel
+                        .findOne({
+                            genres: gid,
+                            _id: { $nin: [...favoriteIds, ...recommendedFilms] },
+                        })
+                        .select('_id')
+                        .lean()
+                    if (found) pushUnique(found._id)
+                }
+            } else {
+                const count = await movieModel.countDocuments()
+                const size = Math.min(40, Math.max(1, count))
+                const sample = await movieModel.aggregate([
+                    { $sample: { size } },
+                    { $project: { _id: 1 } },
+                ])
+                for (const doc of sample) {
+                    if (recommendedFilms.length >= targetCount) break
+                    pushUnique(doc._id)
                 }
             }
 
@@ -700,9 +640,22 @@ class MovieService {
     static getFilmByRating = async () => {
         try {
             const allFilms = await movieModel.aggregate([
-                { 
-                    $sort: {"imdb.rating": -1}
-                }
+                {
+                    $match: {
+                        'imdb.rating': { $type: 'number', $gt: 0 },
+                    },
+                },
+                { $sort: { 'imdb.rating': -1 } },
+                { $limit: 30 },
+                {
+                    $project: {
+                        _id: 1,
+                        title: 1,
+                        image: 1,
+                        imdb: 1,
+                        type: 1,
+                    },
+                },
             ])
             return allFilms;
         } catch (error) {
@@ -713,9 +666,15 @@ class MovieService {
         }
     }
 
-    static getRatings = async () => {
+    static getRatings = async (userId) => {
         try {
-            const ratings = await ratingModel.find({})
+            if (!userId) {
+                return []
+            }
+            const ratings = await ratingModel
+                .find({ email: userId })
+                .select('film_id rate')
+                .lean()
 
             return ratings;
         } catch (error) {

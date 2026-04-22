@@ -325,33 +325,40 @@ const Video = () => {
             })
     }
 
+    /** Chỉ tải dữ liệu cần để mở player + danh sách tập — giảm spike tải backend */
     useEffect(() => {
         getFilmInfo()
         getFilmVideo()
-        getAllGenres()
-        getAllFilms()
-        getRecommendFilms()
-        getAllFavoriteFilms()
-        getRankingFilms()
-        getAllRatingFilm()
-    }, [])
+    }, [id])
 
+    const secondaryDataScheduledRef = useRef(false)
+
+    /** Phần còn lại chạy sau khi có film + video, giãn thời gian để tránh 8 request cùng lúc */
     useEffect(() => {
-        const handleIsLoanding = () => {
-            if (isLoadingFilmInfo || isLoadingFilmInfo || isLoadingAllGenres
-                || isLoadingAllFilms || isLoadingRecommendFilm || isLoadingAllFavoriteFilm
-                || isLoadingRankingFilm || isLoadingAllRatingFilm) {
-                setIsLoading(true)
-            } else {
-                setIsLoading(false)
-            }
+        if (isLoadingFilmInfo || isLoadingFilmVideo) return
+        if (secondaryDataScheduledRef.current) return
+        secondaryDataScheduledRef.current = true
+
+        const timers = []
+        const schedule = (fn, ms) => {
+            timers.push(setTimeout(fn, ms))
         }
 
-        handleIsLoanding()
-    }, [isLoadingFilmInfo, isLoadingFilmVideo, isLoadingAllGenres,
-        isLoadingAllFilms, isLoadingRecommendFilm, isLoadingAllFavoriteFilm,
-        isLoadingRankingFilm, isLoadingAllRatingFilm
-    ])
+        schedule(() => getAllGenres(), 0)
+        schedule(() => getAllFavoriteFilms(), 80)
+        schedule(() => getAllRatingFilm(), 160)
+        schedule(() => getRankingFilms(), 240)
+        schedule(() => getAllFilms(), 400)
+        schedule(() => getRecommendFilms(), 600)
+
+        return () => {
+            timers.forEach(clearTimeout)
+        }
+    }, [isLoadingFilmInfo, isLoadingFilmVideo])
+
+    useEffect(() => {
+        setIsLoading(isLoadingFilmInfo || isLoadingFilmVideo)
+    }, [isLoadingFilmInfo, isLoadingFilmVideo])
 
     useEffect(() => {
         if (!isLoading && filmVideo.length != 1) {

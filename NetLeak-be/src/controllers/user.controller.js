@@ -204,7 +204,8 @@ class UserController {
 
     getRatings = async (req, res, next) => {
         try {
-            return res.status(201).json(await MovieService.getRatings())
+            const userId = req.user?.id
+            return res.status(201).json(await MovieService.getRatings(userId))
         } catch (error) {
             next(error)
         }
