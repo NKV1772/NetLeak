@@ -4,6 +4,9 @@ const router = express.Router()
 // auth
 router.use('/v1/api', require('./auth/auth.route'))
 
+// catalog (doc cong khai cho NetLeak)
+router.use('/v1/api/catalog', require('./catalog/catalog.route'))
+
 // user
 router.use('/v1/api/user', require('./user/user.route'))
 

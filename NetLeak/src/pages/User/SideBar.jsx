@@ -32,7 +32,7 @@ function SideBar() {
       console.log("userId:", userId);
       try {
         const response = await axios.get(
-          `http://localhost:8081/v1/api/admin/users/${decoded}`
+          `http://localhost:8081/v1/api/catalog/users/${decoded}`
         );
         setUser(response.data);
         console.log("user:", response.data);

@@ -16,7 +16,7 @@ const PayStep = () => {
     useEffect(() => {
         const fetchPaymentPakage = () => {
             setIsLoading(true)
-            fetch('http://localhost:8081/v1/api/admin/payments')
+            fetch('http://localhost:8081/v1/api/payment-packages')
                 .then((res) => res.json())
                 .then((data) => {
                     setPakageInfo(data)
@@ -34,7 +34,9 @@ const PayStep = () => {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
+                ...(localStorage.accessToken && {
+                    Authorization: `Bearer ${localStorage.accessToken}`
+                })
             },
             body: JSON.stringify({
                 amount: cost,

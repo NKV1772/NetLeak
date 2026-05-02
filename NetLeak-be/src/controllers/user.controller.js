@@ -88,7 +88,8 @@ class UserController {
     // get favorite film
     getFavoriteFilm = async (req, res, next) => {
         try {
-            return res.status(201).json(await UserService.getFavoriteFilm(req.body))
+            const payload = { ...req.body, ...req.query }
+            return res.status(201).json(await UserService.getFavoriteFilm(payload))
         } catch (error){
             next(error)
         }
@@ -123,7 +124,8 @@ class UserController {
     
     getRecommend = async (req, res, next) => {
         try {
-            return res.status(201).json(await MovieService.getRecommend(req.body))
+            const payload = { ...req.body, ...req.query }
+            return res.status(201).json(await MovieService.getRecommend(payload))
         } catch (error){
             next(error)
         }

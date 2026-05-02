@@ -11,10 +11,15 @@ const multer = require('multer')
 const cloudinary = require('../../configs/config.cloudinary')
 const upload = multer({ dest: 'uploads/' })
 const router = express.Router()
+const AuthService = require('../../services/auth.service')
+const { requireAdmin } = require('../../middleware/xacml.middleware')
 
 multer({
     limits: { fieldSize: 25 * 1024 * 1024 }
   })
+
+router.use(AuthService.verifyToken)
+router.use(requireAdmin)
 
 // add new genre
 router.post('/genres', GenreController.addGenre)

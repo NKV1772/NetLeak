@@ -257,7 +257,7 @@ const Video = () => {
 
     const getAllFilms = () => {
         setIsLoadingAllFilms(true)
-        fetch(`http://localhost:8081/v1/api/admin/films`)
+        fetch(`http://localhost:8081/v1/api/catalog/films`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success != false) {
@@ -274,7 +274,7 @@ const Video = () => {
 
     const getAllGenres = () => {
         setIsLoadingAllGenres(true)
-        fetch(`http://localhost:8081/v1/api/admin/genres`)
+        fetch(`http://localhost:8081/v1/api/catalog/genres`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success != false)
@@ -290,7 +290,7 @@ const Video = () => {
 
     const getFilmInfo = () => {
         setIsLoadingFilmInfo(true)
-        fetch(`http://localhost:8081/v1/api/admin/films/${id}`)
+        fetch(`http://localhost:8081/v1/api/catalog/films/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success != false)
@@ -306,7 +306,7 @@ const Video = () => {
 
     const getFilmVideo = () => {
         setIsLoadingFilmVideo(true)
-        fetch(`http://localhost:8081/v1/api/admin/videos/${id}`)
+        fetch(`http://localhost:8081/v1/api/catalog/videos/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.success != false) {

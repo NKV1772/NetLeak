@@ -38,6 +38,10 @@ function Login() {
         package_id: localStorage.pakageId,
         method: payType,
         total: amount
+      }, {
+        headers: localStorage.accessToken
+          ? { Authorization: `Bearer ${localStorage.accessToken}` }
+          : {}
       })
         .then(() => {
           // navigate('/login')

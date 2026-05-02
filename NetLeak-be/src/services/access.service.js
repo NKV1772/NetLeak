@@ -55,9 +55,13 @@ class AccessService {
                 }
             });
 
+            const payload = { id: newUser.id, email: newUser.email, roles: newUser.roles }
+            const accessToken = AuthService.createAccessToken(payload)
+
             return {
                 success: true,
-                user: getData({ fields: ['_id', 'email', 'name', 'sexuality', 'phone'], object: newUser})
+                user: getData({ fields: ['_id', 'email', 'name', 'sexuality', 'phone'], object: newUser }),
+                accessToken
             }
        } catch (error) {
             return {
@@ -84,7 +88,7 @@ class AccessService {
                 }
             }
 
-            const payload = {id: existUser.id, email};
+            const payload = { id: existUser.id, email, roles: existUser.roles };
 
             const accessToken = AuthService.createAccessToken(payload);
 

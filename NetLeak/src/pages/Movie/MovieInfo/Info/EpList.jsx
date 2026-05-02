@@ -17,7 +17,7 @@ const EpList = () => {
     }
     useEffect(() => {
         const fetchVideo = () => {
-            axios.get("http://localhost:8081/v1/api/admin/videos/" + params.id)
+            axios.get("http://localhost:8081/v1/api/catalog/videos/" + params.id)
                 .then((res) => {
                     setVideo(res.data)
                 })

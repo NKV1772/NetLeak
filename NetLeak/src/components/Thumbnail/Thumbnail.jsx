@@ -26,7 +26,7 @@ const Thumbnail = () => {
         const fetchMovieDetail = async () => {
             try {
                 const promises = TopMovies.map((movieID) => {
-                    return axios.get(`http://localhost:8081/v1/api/admin/films/${movieID}`);
+                    return axios.get(`http://localhost:8081/v1/api/catalog/films/${movieID}`);
                 });
 
                 const responses = await Promise.all(promises);

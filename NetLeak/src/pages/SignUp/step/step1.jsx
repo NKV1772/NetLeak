@@ -64,7 +64,10 @@ const Step1 = () => {
                 {
 
                 localStorage.setItem('userID', data.user._id)
-                
+                if (data.accessToken) {
+                    localStorage.setItem('accessToken', data.accessToken)
+                }
+
                 navigate('/signup/step2')
             }
 

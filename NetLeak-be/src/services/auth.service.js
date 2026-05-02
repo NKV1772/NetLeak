@@ -62,8 +62,13 @@ class AuthService {
                             message: 'Invalid token'
                         })
                     }
-                    const newAccessToken = AuthService.createAccessToken({id: user.id, email: user.email})
-                    const newRefreshToken = AuthService.createRefreshToken({id: user.id, email: user.email})
+                    const payload = {
+                        id: user.id,
+                        email: user.email,
+                        roles: user.roles
+                    }
+                    const newAccessToken = AuthService.createAccessToken(payload)
+                    const newRefreshToken = AuthService.createRefreshToken(payload)
                     res.cookie("refreshToken", newRefreshToken, {
                         httpOnly: true,
                         secure: false,

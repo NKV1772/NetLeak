@@ -47,7 +47,7 @@ const User = () => {
       setUserId(decoded);
       console.log("userId:", userId);
       try {
-        const response = await axios.get(`http://localhost:8081/v1/api/admin/users/${decoded}`);
+        const response = await axios.get(`http://localhost:8081/v1/api/catalog/users/${decoded}`);
         setUser(response.data);
         setEmail(response.data.email);
         setPhone(response.data.phone);

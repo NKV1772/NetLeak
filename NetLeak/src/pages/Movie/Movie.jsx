@@ -16,7 +16,7 @@ const Movie = () => {
     const [film, setFilm] = useState()
     useEffect(() => {
         const fetchMovie = () => {
-            axios.get("http://localhost:8081/v1/api/admin/films/" + params.id)
+            axios.get("http://localhost:8081/v1/api/catalog/films/" + params.id)
                 .then((res) => {
                     setFilm(res.data)
                 })

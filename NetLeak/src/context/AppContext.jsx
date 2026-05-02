@@ -14,39 +14,9 @@ export const AppProvider = ({ children }) => {
 
     
 
-    const fetchUser = () => {
-        axios.get("http://localhost:8081/v1/api/admin/users")
-            .then((res) => {
-                setUsers(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
-    const fetchCast = () => {
-        axios.get("http://localhost:8081/v1/api/admin/casts")
-            .then((res) => {
-                setCasts(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
-    const fetchDirector = () => {
-        axios.get("http://localhost:8081/v1/api/admin/studios")
-            .then((res) => {
-                setDirectors(res.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
     const fetchGenre = () => {
         axios
-            .get("http://localhost:8081/v1/api/admin/genres")
+            .get("http://localhost:8081/v1/api/catalog/genres")
             .then((res) => {
                 setGenres(res.data);
             })
@@ -56,7 +26,7 @@ export const AppProvider = ({ children }) => {
     };
 
     const fetchMovie = () => {
-        axios.get("http://localhost:8081/v1/api/admin/films")
+        axios.get("http://localhost:8081/v1/api/catalog/films")
             .then((res) => {
                 setMovies(res.data)
             })
@@ -65,9 +35,6 @@ export const AppProvider = ({ children }) => {
             })
     }
     useEffect(() => {
-        fetchUser()
-        fetchCast()
-        fetchDirector()
         fetchMovie()
         fetchGenre()
     }, [])
