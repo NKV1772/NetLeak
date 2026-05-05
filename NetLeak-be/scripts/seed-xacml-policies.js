@@ -1,10 +1,8 @@
 /**
- * Nap 4 policy XACML (NetLeak) vao MongoDB collection Policies.
+ * Nap 4 policy XACML (NetLeak) — PolicyId khớp báo cáo Word (P1–P4).
  *
  * Chay tu thu muc NetLeak-be:
- *   node scripts/seed-xacml-policies.js
- *
- * Can bien MONGODB_URI trong .env (giong app), hoac URI mac dinh localhost.
+ *   npm run seed:policies
  */
 
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') })
@@ -12,6 +10,7 @@ const fs = require('fs')
 const path = require('path')
 const mongoose = require('mongoose')
 const policyModel = require('../src/models/policy.model')
+const POL = require('../src/configs/config.policy')
 
 const connectString =
     process.env.MONGODB_URI ||
@@ -21,38 +20,45 @@ const POLICIES_DIR = path.join(__dirname, '../docs/xacml/policies')
 
 const SEED = [
     {
-        policyId: 'POL_USER_AUTHENTICATED_ACCESS',
-        file: 'POL_USER_AUTHENTICATED_ACCESS.xml',
-        title: 'User API — xac thuc bat buoc',
+        policyId: POL.P1_AUTHENTICATION,
+        file: 'P1-AuthenticationPolicy.xml',
+        title: 'P1 — Authentication Policy (JWT)',
         description:
-            'Chi nguoi da dang nhap (token hop le) truy cap /v1/api/user/* — read/create/update/delete.'
+            'Word 3.3.1: Request /v1/api/user/* bat buoc JWT hop le trong Authorization Bearer.'
     },
     {
-        policyId: 'POL_ADMIN_ONLY_BACKOFFICE',
-        file: 'POL_ADMIN_ONLY_BACKOFFICE.xml',
-        title: 'Backoffice — chi admin',
+        policyId: POL.P3_RBAC_ADMIN,
+        file: 'P3-RBACPolicy.xml',
+        title: 'P3 — RBAC Admin Policy',
         description:
-            'Chi role admin truy cap /v1/api/admin/* (catalog, doanh thu, ...).'
+            'Word 3.3.2: Chi user.roles = admin truy cap /v1/api/admin/*.'
     },
     {
-        policyId: 'POL_USER_OWNER_DATA_ONLY',
-        file: 'POL_USER_OWNER_DATA_ONLY.xml',
-        title: 'Du lieu ca nhan — chi owner',
+        policyId: POL.P2_OWNERSHIP,
+        file: 'P2-OwnershipPolicy.xml',
+        title: 'P2 — Ownership Policy',
         description:
-            'profile, favorite, saved_movie, history: subject.userId phai khop resource.userId.'
+            'Word 3.3.3: subject.id khop resource.ownerId — ho so, favorite, saved movie, history.'
     },
     {
-        policyId: 'POL_RATING_VALID_RANGE',
-        file: 'POL_RATING_VALID_RANGE.xml',
-        title: 'Rating — mien gia tri hop le',
+        policyId: POL.P4_RATING_CONSTRAINT,
+        file: 'P4-RatingConstraintPolicy.xml',
+        title: 'P4 — Rating Data Constraint Policy',
         description:
-            'create/update rating: authenticated va 0 <= rate <= 10.'
+            'Word 3.3.4: POST rating 0 <= rate <= 10; DELETE rating chi chu so huu (rating.email).'
     }
 ]
 
 async function run() {
     await mongoose.connect(connectString, { maxPoolSize: 10 })
     console.log('MongoDB connected:', connectString.replace(/\/\/.*@/, '//***@'))
+
+    const del = await policyModel.deleteMany({
+        policyId: { $in: POL.LEGACY_POLICY_IDS }
+    })
+    if (del.deletedCount > 0) {
+        console.log('Da xoa policyId cu (POL_*):', del.deletedCount)
+    }
 
     for (const row of SEED) {
         const xmlPath = path.join(POLICIES_DIR, row.file)

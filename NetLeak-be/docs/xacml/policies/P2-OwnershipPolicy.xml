@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
-        PolicyId="POL_USER_OWNER_DATA_ONLY"
+        PolicyId="P2-OwnershipPolicy"
         Version="1.0"
         RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
   <Description>
-    Profile, favorite, saved_movie, history: Permit chi khi subject.user-id khop resource.user-id (chong truy cap cheo).
+    Policy 2 (Word): Ownership — Người dùng chỉ thao tác trên dữ liệu của chính mình:
+    subject.id (JWT) phải khớp resource.ownerId (userId trên body/param/query — profile, favorite, saved_movie, history, ...).
   </Description>
   <Target>
     <AnyOf>
@@ -46,7 +47,7 @@
       </AllOf>
     </AnyOf>
   </Target>
-  <Rule RuleId="rule-permit-owner-only" Effect="Permit">
+  <Rule RuleId="R1-Permit-SameUser" Effect="Permit">
     <Condition>
       <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">

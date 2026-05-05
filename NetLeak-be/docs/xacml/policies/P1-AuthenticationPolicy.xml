@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
-        PolicyId="POL_USER_AUTHENTICATED_ACCESS"
+        PolicyId="P1-AuthenticationPolicy"
         Version="1.0"
         RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
   <Description>
-    Chi nguoi dung da xac thuc (token hop le) duoc truy cap nhom API /v1/api/user/*.
-    Permit khi subject.authenticated va environment.access-token-valid; PEP tu choi neu NotApplicable.
+    Policy 1 (Word): Xác thực JWT — Mọi request tài nguyên /v1/api/user/* phải có Access Token hợp lệ (Authorization Bearer).
+    Thuộc tính tham chiếu: jwt.valid / access-token-valid; Permit khi token hợp lệ.
   </Description>
   <Target>
     <AnyOf>
@@ -20,7 +20,7 @@
       </AllOf>
     </AnyOf>
   </Target>
-  <Rule RuleId="rule-permit-authenticated-user-area" Effect="Permit">
+  <Rule RuleId="R1-Permit-ValidToken" Effect="Permit">
     <Condition>
       <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">

@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: a3fd7f8a-6905-4283-8964-c51b95c06d82
+
+localResources:
+  specs:
+    - ..\NetLeak-be\docs\swagger.yaml

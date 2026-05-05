@@ -16,6 +16,14 @@ const EVAL_DEFAULT = {
     ratingValue: 7
 }
 
+/** PolicyId khớp Word / báo cáo Chương 3.3 */
+const POLICY_IDS = [
+    { id: 'P1-AuthenticationPolicy', label: 'P1 — Authentication (JWT)' },
+    { id: 'P3-RBACPolicy', label: 'P3 — RBAC Admin' },
+    { id: 'P2-OwnershipPolicy', label: 'P2 — Ownership' },
+    { id: 'P4-RatingConstraintPolicy', label: 'P4 — Rating constraint' }
+]
+
 export default function Policies() {
     const [list, setList] = useState([])
     const [loading, setLoading] = useState(true)
@@ -24,7 +32,7 @@ export default function Policies() {
     const [editBody, setEditBody] = useState('')
     const [saving, setSaving] = useState(false)
 
-    const [evalPolicyId, setEvalPolicyId] = useState('POL_RATING_VALID_RANGE')
+    const [evalPolicyId, setEvalPolicyId] = useState('P4-RatingConstraintPolicy')
     const [evalJson, setEvalJson] = useState(() => JSON.stringify(EVAL_DEFAULT, null, 2))
     const [evalResult, setEvalResult] = useState(null)
 
@@ -134,7 +142,7 @@ export default function Policies() {
             <div>
                 <h1 className="text-2xl font-bold text-[#101A33]">Chính sách XACML (MongoDB)</h1>
                 <p className="text-sm text-gray-600 mt-1">
-                    Bật/tắt enforcement qua PEM; chỉnh XML trong DB; demo PDP đơn giản (evaluate).
+                    Bật/tắt enforcement qua PEP; chỉnh XML trong DB; demo PDP đơn giản (evaluate).
                 </p>
             </div>
 
@@ -220,18 +228,11 @@ export default function Policies() {
                         value={evalPolicyId}
                         onChange={(e) => setEvalPolicyId(e.target.value)}
                     >
-                        <option value="POL_USER_AUTHENTICATED_ACCESS">
-                            POL_USER_AUTHENTICATED_ACCESS
-                        </option>
-                        <option value="POL_ADMIN_ONLY_BACKOFFICE">
-                            POL_ADMIN_ONLY_BACKOFFICE
-                        </option>
-                        <option value="POL_USER_OWNER_DATA_ONLY">
-                            POL_USER_OWNER_DATA_ONLY
-                        </option>
-                        <option value="POL_RATING_VALID_RANGE">
-                            POL_RATING_VALID_RANGE
-                        </option>
+                        {POLICY_IDS.map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.label}
+                            </option>
+                        ))}
                     </select>
                 </label>
                 <label className="flex flex-col gap-1 text-sm">

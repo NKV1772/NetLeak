@@ -1,0 +1,14 @@
+name: local-netleak
+values:
+  - key: baseUrl
+    value: ''
+  - key: userToken
+    value: ''
+  - key: adminToken
+    value: ''
+  - key: userId
+    value: ''
+  - key: otherUserId
+    value: ''
+  - key: filmId
+    value: ''

@@ -1,5 +1,6 @@
 const userModel = require('../models/user.model')
 const roleConfig = require('../configs/config.role')
+const POL = require('../configs/config.policy')
 const PolicyService = require('../services/policy.service')
 
 function deny(res, policyId, reason) {
@@ -10,10 +11,10 @@ function deny(res, policyId, reason) {
     })
 }
 
-/** POL_ADMIN_ONLY_BACKOFFICE */
+/** P3-RBACPolicy (Word): chi admin truy cap /v1/api/admin/* */
 async function requireAdmin(req, res, next) {
     try {
-        const enforced = await PolicyService.isPolicyEnabled('POL_ADMIN_ONLY_BACKOFFICE')
+        const enforced = await PolicyService.isPolicyEnabled(POL.P3_RBAC_ADMIN)
         if (!enforced) {
             return next()
         }
@@ -23,7 +24,7 @@ async function requireAdmin(req, res, next) {
             roles = u?.roles
         }
         if (String(roles) !== roleConfig.ADMIN) {
-            return deny(res, 'POL_ADMIN_ONLY_BACKOFFICE', 'Admin role required')
+            return deny(res, POL.P3_RBAC_ADMIN, 'Admin role required')
         }
         next()
     } catch (err) {
@@ -31,11 +32,11 @@ async function requireAdmin(req, res, next) {
     }
 }
 
-/** POL_USER_OWNER_DATA_ONLY — so khớp req.params[paramName] với subject.id trong JWT */
+/** P2-OwnershipPolicy — so khớp req.params[paramName] với subject.id trong JWT */
 function requireResourceOwnerParam(paramName) {
     return async (req, res, next) => {
         try {
-            const enforced = await PolicyService.isPolicyEnabled('POL_USER_OWNER_DATA_ONLY')
+            const enforced = await PolicyService.isPolicyEnabled(POL.P2_OWNERSHIP)
             if (!enforced) {
                 return next()
             }
@@ -46,7 +47,7 @@ function requireResourceOwnerParam(paramName) {
                 resourceId === undefined ||
                 String(subjectId) !== String(resourceId)
             ) {
-                return deny(res, 'POL_USER_OWNER_DATA_ONLY', 'Resource owner mismatch')
+                return deny(res, POL.P2_OWNERSHIP, 'Resource owner mismatch')
             }
             next()
         } catch (err) {
@@ -55,11 +56,11 @@ function requireResourceOwnerParam(paramName) {
     }
 }
 
-/** POL_USER_OWNER_DATA_ONLY — so khớp req.body[field] với subject.id trong JWT */
+/** P2-OwnershipPolicy — so khớp req.body[field] với subject.id trong JWT */
 function requireResourceOwnerBody(fieldName) {
     return async (req, res, next) => {
         try {
-            const enforced = await PolicyService.isPolicyEnabled('POL_USER_OWNER_DATA_ONLY')
+            const enforced = await PolicyService.isPolicyEnabled(POL.P2_OWNERSHIP)
             if (!enforced) {
                 return next()
             }
@@ -71,7 +72,7 @@ function requireResourceOwnerBody(fieldName) {
                 resourceId === null ||
                 String(subjectId) !== String(resourceId)
             ) {
-                return deny(res, 'POL_USER_OWNER_DATA_ONLY', 'Resource owner mismatch')
+                return deny(res, POL.P2_OWNERSHIP, 'Resource owner mismatch')
             }
             next()
         } catch (err) {
@@ -80,11 +81,11 @@ function requireResourceOwnerBody(fieldName) {
     }
 }
 
-/** Owner check cho GET có thể truyền userId qua query (body GET thường rỗng). */
+/** P2-OwnershipPolicy — GET query userId */
 function requireResourceOwnerQuery(fieldName) {
     return async (req, res, next) => {
         try {
-            const enforced = await PolicyService.isPolicyEnabled('POL_USER_OWNER_DATA_ONLY')
+            const enforced = await PolicyService.isPolicyEnabled(POL.P2_OWNERSHIP)
             if (!enforced) {
                 return next()
             }
@@ -96,7 +97,7 @@ function requireResourceOwnerQuery(fieldName) {
                 resourceId === null ||
                 String(subjectId) !== String(resourceId)
             ) {
-                return deny(res, 'POL_USER_OWNER_DATA_ONLY', 'Resource owner mismatch')
+                return deny(res, POL.P2_OWNERSHIP, 'Resource owner mismatch')
             }
             next()
         } catch (err) {
@@ -105,19 +106,19 @@ function requireResourceOwnerQuery(fieldName) {
     }
 }
 
-/** POL_RATING_VALID_RANGE — POST /rating */
+/** P4-RatingConstraintPolicy — POST /rating: rate trong [0,10] */
 async function requireRatingValidRange(req, res, next) {
     try {
-        const enforced = await PolicyService.isPolicyEnabled('POL_RATING_VALID_RANGE')
+        const enforced = await PolicyService.isPolicyEnabled(POL.P4_RATING_CONSTRAINT)
         if (!enforced) {
             return next()
         }
         const rate = req.body?.rate
         if (typeof rate !== 'number' || Number.isNaN(rate)) {
-            return deny(res, 'POL_RATING_VALID_RANGE', 'rate must be a number')
+            return deny(res, POL.P4_RATING_CONSTRAINT, 'rate must be a number')
         }
         if (rate < 0 || rate > 10) {
-            return deny(res, 'POL_RATING_VALID_RANGE', 'rate must be between 0 and 10 inclusive')
+            return deny(res, POL.P4_RATING_CONSTRAINT, 'rate must be between 0 and 10 inclusive')
         }
         next()
     } catch (err) {

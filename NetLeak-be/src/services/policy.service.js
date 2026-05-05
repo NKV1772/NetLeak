@@ -1,4 +1,5 @@
 const policyModel = require('../models/policy.model')
+const POL = require('../configs/config.policy')
 
 const CACHE_TTL_MS = 15000
 let cache = { map: null, expiresAt: 0 }
@@ -80,7 +81,7 @@ function evaluateContext(policyId, ctx = {}) {
     const subAuth = authenticated === true || authenticated === 'true'
 
     switch (policyId) {
-        case 'POL_USER_AUTHENTICATED_ACCESS': {
+        case POL.P1_AUTHENTICATION: {
             const match = /\/v1\/api\/user(\/|$)/.test(path)
             if (!match) {
                 return {
@@ -89,11 +90,11 @@ function evaluateContext(policyId, ctx = {}) {
                 }
             }
             if (tokenOk && subAuth) {
-                return { decision: 'Permit', reason: 'Token hop le va subject authenticated' }
+                return { decision: 'Permit', reason: 'JWT hop le (jwt.valid / authenticated)' }
             }
             return { decision: 'Deny', reason: 'Thieu token hoac token khong hop le' }
         }
-        case 'POL_ADMIN_ONLY_BACKOFFICE': {
+        case POL.P3_RBAC_ADMIN: {
             const match = /\/v1\/api\/admin(\/|$)/.test(path)
             if (!match) {
                 return {
@@ -102,11 +103,11 @@ function evaluateContext(policyId, ctx = {}) {
                 }
             }
             if (tokenOk && String(role) === 'admin') {
-                return { decision: 'Permit', reason: 'subject.role == admin' }
+                return { decision: 'Permit', reason: 'user.roles == admin' }
             }
             return { decision: 'Deny', reason: 'Can role admin' }
         }
-        case 'POL_USER_OWNER_DATA_ONLY': {
+        case POL.P2_OWNERSHIP: {
             const types = ['profile', 'favorite', 'saved_movie', 'history']
             if (!types.includes(String(resourceType))) {
                 return {
@@ -116,18 +117,32 @@ function evaluateContext(policyId, ctx = {}) {
             }
             if (!subAuth) return { decision: 'Deny', reason: 'Chua xac thuc' }
             if (String(subjectUserId) === String(resourceUserId)) {
-                return { decision: 'Permit', reason: 'subject.userId == resource.userId' }
+                return {
+                    decision: 'Permit',
+                    reason: 'subject.id == resource.ownerId (Ownership Policy)'
+                }
             }
             return { decision: 'Deny', reason: 'Resource owner mismatch' }
         }
-        case 'POL_RATING_VALID_RANGE': {
+        case POL.P4_RATING_CONSTRAINT: {
             if (String(resourceType) !== 'rating') {
                 return { decision: 'NotApplicable', reason: 'resourceType phai la rating' }
             }
-            if (!['create', 'update'].includes(String(actionId))) {
+            const act = String(actionId)
+            if (act === 'delete') {
+                if (!subAuth) return { decision: 'Deny', reason: 'Chua xac thuc' }
+                if (String(subjectUserId) === String(resourceUserId)) {
+                    return {
+                        decision: 'Permit',
+                        reason: 'subject.id khop rating.email (chu so huu)'
+                    }
+                }
+                return { decision: 'Deny', reason: 'Khong phai chu so huu rating' }
+            }
+            if (!['create', 'update'].includes(act)) {
                 return {
                     decision: 'NotApplicable',
-                    reason: 'actionId phai la create hoac update'
+                    reason: 'actionId phai la create, update hoac delete'
                 }
             }
             if (!subAuth) return { decision: 'Deny', reason: 'Chua xac thuc' }
@@ -136,7 +151,7 @@ function evaluateContext(policyId, ctx = {}) {
                 return { decision: 'Deny', reason: 'rate phai la so' }
             }
             if (n >= 0 && n <= 10) {
-                return { decision: 'Permit', reason: '0 <= rate <= 10' }
+                return { decision: 'Permit', reason: '0 <= rate <= 10 (Data Constraint)' }
             }
             return { decision: 'Deny', reason: 'rate ngoai [0,10]' }
         }

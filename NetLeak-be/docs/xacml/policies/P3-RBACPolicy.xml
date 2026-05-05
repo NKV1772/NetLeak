@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
-        PolicyId="POL_ADMIN_ONLY_BACKOFFICE"
+        PolicyId="P3-RBACPolicy"
         Version="1.0"
         RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
   <Description>
-    Chi tai khoan co role admin duoc truy cap /v1/api/admin/* (CRUD catalog, doanh thu, ...).
-    Permit khi token hop le va subject.role == admin.
+    Policy 3 (Word): RBAC Admin — Chỉ user.roles = admin được truy cập /v1/api/admin/*
+    (CRUD phim, thể loại, cast, studio, gói thanh toán, doanh thu).
   </Description>
   <Target>
     <AnyOf>
@@ -20,7 +20,7 @@
       </AllOf>
     </AnyOf>
   </Target>
-  <Rule RuleId="rule-permit-admin-backoffice" Effect="Permit">
+  <Rule RuleId="R1-Permit-Admin" Effect="Permit">
     <Condition>
       <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">

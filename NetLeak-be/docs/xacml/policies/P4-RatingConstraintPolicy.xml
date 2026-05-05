@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
-        PolicyId="POL_RATING_VALID_RANGE"
+        PolicyId="P4-RatingConstraintPolicy"
         Version="1.0"
         RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
   <Description>
-    Tai nguyen rating: create/update — Permit khi da xac thuc va 0 &lt;= rate &lt;= 10 (integer).
-    PEP map request.rate vao urn:netleak:resource:rating-value (integer).
+    Policy 4 (Word): Data Constraint — POST rating: 0 &lt;= rate &lt;= 10;
+    DELETE rating: subject.id khớp chủ sở hữu bản ghi (rating.email / userId trong DB).
   </Description>
   <Target>
     <AnyOf>
@@ -38,14 +38,21 @@
             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
             AttributeId="urn:netleak:action:id"
             DataType="http://www.w3.org/2001/XMLSchema#string"/>
-          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">update</AttributeValue>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
         </Match>
       </AllOf>
     </AnyOf>
   </Target>
-  <Rule RuleId="rule-permit-rating-in-range" Effect="Permit">
+  <Rule RuleId="R1-Permit-ValidRate" Effect="Permit">
     <Condition>
       <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+            AttributeId="urn:netleak:action:id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">create</AttributeValue>
+        </Apply>
         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
           <AttributeDesignator MustBePresent="true"
             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject"
@@ -68,6 +75,29 @@
               DataType="http://www.w3.org/2001/XMLSchema#integer"/>
             <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#integer">10</AttributeValue>
           </Apply>
+        </Apply>
+      </Apply>
+    </Condition>
+  </Rule>
+  <Rule RuleId="R2-Permit-DeleteOwnRating" Effect="Permit">
+    <Condition>
+      <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+            AttributeId="urn:netleak:action:id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+        </Apply>
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject"
+            AttributeId="urn:netleak:subject:user-id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:user-id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
         </Apply>
       </Apply>
     </Condition>

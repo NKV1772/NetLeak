@@ -10,7 +10,7 @@ const {
 
 const router = express.Router()
 
-// POL_USER_AUTHENTICATED_ACCESS + POL_ADMIN không áp dụng — giữ nguyên luồng hiện tại
+// P1-AuthenticationPolicy (verifyToken) + P2/P4 qua xacml.middleware — không áp admin route o day
 
 router.get('/listAllUsers', AuthService.verifyToken, UserController.listAllUsers)
 

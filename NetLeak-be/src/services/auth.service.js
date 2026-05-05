@@ -3,6 +3,7 @@ const paymentModel = require('../models/payment.model')
 const userModel = require('../models/user.model')
 const getData = require('../utils/formatRes')
 const PolicyService = require('./policy.service')
+const POL = require('../configs/config.policy')
 
 class AuthService {
     static createAccessToken = (payload) => {
@@ -23,16 +24,14 @@ class AuthService {
         ;(async () => {
             let authPolicyEnforced = true
             try {
-                authPolicyEnforced = await PolicyService.isPolicyEnabled(
-                    'POL_USER_AUTHENTICATED_ACCESS'
-                )
+                authPolicyEnforced = await PolicyService.isPolicyEnabled(POL.P1_AUTHENTICATION)
             } catch (_) {
                 authPolicyEnforced = true
             }
             const denyMeta = () =>
                 authPolicyEnforced
                     ? {
-                          policyId: 'POL_USER_AUTHENTICATED_ACCESS',
+                          policyId: POL.P1_AUTHENTICATION,
                           decision: 'Deny'
                       }
                     : {}
