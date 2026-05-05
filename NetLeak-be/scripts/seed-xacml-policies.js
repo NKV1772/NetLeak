@@ -1,10 +1,3 @@
-/**
- * Nap 4 policy XACML (NetLeak) — PolicyId khớp báo cáo Word (P1–P4).
- *
- * Chay tu thu muc NetLeak-be:
- *   npm run seed:policies
- */
-
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') })
 const fs = require('fs')
 const path = require('path')
@@ -52,13 +45,6 @@ const SEED = [
 async function run() {
     await mongoose.connect(connectString, { maxPoolSize: 10 })
     console.log('MongoDB connected:', connectString.replace(/\/\/.*@/, '//***@'))
-
-    const del = await policyModel.deleteMany({
-        policyId: { $in: POL.LEGACY_POLICY_IDS }
-    })
-    if (del.deletedCount > 0) {
-        console.log('Da xoa policyId cu (POL_*):', del.deletedCount)
-    }
 
     for (const row of SEED) {
         const xmlPath = path.join(POLICIES_DIR, row.file)
