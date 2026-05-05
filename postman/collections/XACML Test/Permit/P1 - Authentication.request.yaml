@@ -1,0 +1,5 @@
+$kind: http-request
+url: "{{baseUrl}}/v1/api/user/ratings"
+method: GET
+headers:
+  Authorization: Bearer {{userToken}}

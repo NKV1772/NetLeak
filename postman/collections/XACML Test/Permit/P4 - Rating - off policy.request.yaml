@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/v1/api/user/rating"
+method: POST
+headers:
+  Authorization: Bearer {{userToken}}
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"emailId\": \"{{userId}}\",\r
+
+    \  \"filmId\": \"{{filmId}}\",\r
+
+    \  \"rate\": 11\r
+
+    }"
+order: 59504420978687

@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/v1/api/user/favorite"
+method: POST
+headers:
+  Authorization: Bearer {{userToken}}
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"userId\": \"{{otherUserId}}\",\r
+
+    \  \"filmId\": \"{{filmId}}\"\r
+
+    }"
+order: 2790111381028863

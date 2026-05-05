@@ -16,7 +16,6 @@ const EVAL_DEFAULT = {
     ratingValue: 7
 }
 
-/** PolicyId khớp Word / báo cáo Chương 3.3 */
 const POLICY_IDS = [
     { id: 'P1-AuthenticationPolicy', label: 'P1 — Authentication (JWT)' },
     { id: 'P3-RBACPolicy', label: 'P3 — RBAC Admin' },
@@ -141,9 +140,6 @@ export default function Policies() {
         <div className="w-full max-w-6xl mx-auto flex flex-col gap-6 pb-10 px-2 text-gray-900">
             <div>
                 <h1 className="text-2xl font-bold text-[#101A33]">Chính sách XACML (MongoDB)</h1>
-                <p className="text-sm text-gray-600 mt-1">
-                    Bật/tắt enforcement qua PEP; chỉnh XML trong DB; demo PDP đơn giản (evaluate).
-                </p>
             </div>
 
             {err && (
@@ -236,7 +232,7 @@ export default function Policies() {
                     </select>
                 </label>
                 <label className="flex flex-col gap-1 text-sm">
-                    context (JSON — khớp attribute urn:netleak:* trong XML)
+                    context - Json
                     <textarea
                         className="w-full min-h-[200px] font-mono text-xs border rounded p-2"
                         value={evalJson}

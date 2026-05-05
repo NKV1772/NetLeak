@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/v1/api/admin/users"
+method: GET
+headers:
+  Authorization: " Bearer {{adminToken}}"
+order: 4404510432690175
