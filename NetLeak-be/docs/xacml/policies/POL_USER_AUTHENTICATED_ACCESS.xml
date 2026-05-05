@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+        PolicyId="POL_USER_AUTHENTICATED_ACCESS"
+        Version="1.0"
+        RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
+  <Description>
+    Chi nguoi dung da xac thuc (token hop le) duoc truy cap nhom API /v1/api/user/*.
+    Permit khi subject.authenticated va environment.access-token-valid; PEP tu choi neu NotApplicable.
+  </Description>
+  <Target>
+    <AnyOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-regexp-match">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">^/v1/api/user(?:/.*)?$</AttributeValue>
+          <AttributeDesignator MustBePresent="false"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:api-path"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+        </Match>
+      </AllOf>
+    </AnyOf>
+  </Target>
+  <Rule RuleId="rule-permit-authenticated-user-area" Effect="Permit">
+    <Condition>
+      <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+            AttributeId="urn:netleak:environment:access-token-valid"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">true</AttributeValue>
+        </Apply>
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject"
+            AttributeId="urn:netleak:subject:authenticated"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">true</AttributeValue>
+        </Apply>
+      </Apply>
+    </Condition>
+  </Rule>
+</Policy>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+        PolicyId="POL_USER_OWNER_DATA_ONLY"
+        Version="1.0"
+        RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
+  <Description>
+    Profile, favorite, saved_movie, history: Permit chi khi subject.user-id khop resource.user-id (chong truy cap cheo).
+  </Description>
+  <Target>
+    <AnyOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:type"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">profile</AttributeValue>
+        </Match>
+      </AllOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:type"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">favorite</AttributeValue>
+        </Match>
+      </AllOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:type"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">saved_movie</AttributeValue>
+        </Match>
+      </AllOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:type"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">history</AttributeValue>
+        </Match>
+      </AllOf>
+    </AnyOf>
+  </Target>
+  <Rule RuleId="rule-permit-owner-only" Effect="Permit">
+    <Condition>
+      <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject"
+            AttributeId="urn:netleak:subject:authenticated"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">true</AttributeValue>
+        </Apply>
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject"
+            AttributeId="urn:netleak:subject:user-id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:user-id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+        </Apply>
+      </Apply>
+    </Condition>
+  </Rule>
+</Policy>

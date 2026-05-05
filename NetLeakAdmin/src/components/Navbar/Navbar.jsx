@@ -14,35 +14,33 @@ const Navbar = ({ navSlide }) => {
   const location = useLocation();
 
   useEffect(() => {
+    const routeLink = location.pathname.split('/')
 
-    const getRoute = () => {
-      const routeLink = location.pathname.split('/')
+    let routeLinkNum = 0
 
-      let routeLinkNum = 0
+    if (routeLink[1] == 'thong-ke')
+      routeLinkNum = 1
 
-      if (routeLink[1] == 'thong-ke')
-        routeLinkNum = 1
+    if (routeLink[1] == 'nguoi-dung')
+      routeLinkNum = 2
 
-      if (routeLink[1] == 'nguoi-dung')
-        routeLinkNum = 2
+    if (routeLink[1] == 'phim')
+      routeLinkNum = 3
 
-      if (routeLink[1] == 'phim')
-        routeLinkNum = 3
+    if (routeLink[1] == 'the-loai')
+      routeLinkNum = 4
 
-      if (routeLink[1] == 'the-loai')
-        routeLinkNum = 4
+    if (routeLink[1] == 'dien-vien')
+      routeLinkNum = 5
 
-      if (routeLink[1] == 'dien-vien')
-        routeLinkNum = 5
+    if (routeLink[1] == 'doi-ngu')
+      routeLinkNum = 6
 
-      if (routeLink[1] == 'doi-ngu')
-        routeLinkNum = 6
+    if (routeLink[1] == 'chinh-sach-xacml')
+      routeLinkNum = 7
 
-      setIsSelect(routeLinkNum)
-    }
-
-    getRoute()
-  }, [])
+    setIsSelect(routeLinkNum)
+  }, [location.pathname])
 
   useEffect(() => {
     setSearchUserText("")
@@ -134,6 +132,16 @@ const Navbar = ({ navSlide }) => {
             isSelect={isSelect}
             position={6}
             onclick={() => setIsSelect(6)}
+            navSlide={navSlide}
+          />
+
+          <NavButton
+            text={"Chính sách XACML"}
+            icon={"fa-solid fa-shield-halved"}
+            path={"/chinh-sach-xacml"}
+            isSelect={isSelect}
+            position={7}
+            onclick={() => setIsSelect(7)}
             navSlide={navSlide}
           />
         </ul>

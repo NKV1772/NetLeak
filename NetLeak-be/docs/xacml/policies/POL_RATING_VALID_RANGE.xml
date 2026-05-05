@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+        PolicyId="POL_RATING_VALID_RANGE"
+        Version="1.0"
+        RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
+  <Description>
+    Tai nguyen rating: create/update — Permit khi da xac thuc va 0 &lt;= rate &lt;= 10 (integer).
+    PEP map request.rate vao urn:netleak:resource:rating-value (integer).
+  </Description>
+  <Target>
+    <AnyOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:type"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">rating</AttributeValue>
+        </Match>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+            AttributeId="urn:netleak:action:id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">create</AttributeValue>
+        </Match>
+      </AllOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+            AttributeId="urn:netleak:resource:type"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">rating</AttributeValue>
+        </Match>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+            AttributeId="urn:netleak:action:id"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">update</AttributeValue>
+        </Match>
+      </AllOf>
+    </AnyOf>
+  </Target>
+  <Rule RuleId="rule-permit-rating-in-range" Effect="Permit">
+    <Condition>
+      <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+          <AttributeDesignator MustBePresent="true"
+            Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject"
+            AttributeId="urn:netleak:subject:authenticated"
+            DataType="http://www.w3.org/2001/XMLSchema#string"/>
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">true</AttributeValue>
+        </Apply>
+        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+          <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:integer-greater-than-or-equal">
+            <AttributeDesignator MustBePresent="true"
+              Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+              AttributeId="urn:netleak:resource:rating-value"
+              DataType="http://www.w3.org/2001/XMLSchema#integer"/>
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#integer">0</AttributeValue>
+          </Apply>
+          <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:integer-less-than-or-equal">
+            <AttributeDesignator MustBePresent="true"
+              Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+              AttributeId="urn:netleak:resource:rating-value"
+              DataType="http://www.w3.org/2001/XMLSchema#integer"/>
+            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#integer">10</AttributeValue>
+          </Apply>
+        </Apply>
+      </Apply>
+    </Condition>
+  </Rule>
+</Policy>

@@ -13,6 +13,7 @@ const upload = multer({ dest: 'uploads/' })
 const router = express.Router()
 const AuthService = require('../../services/auth.service')
 const { requireAdmin } = require('../../middleware/xacml.middleware')
+const PolicyController = require('../../controllers/policy.controller')
 
 multer({
     limits: { fieldSize: 25 * 1024 * 1024 }
@@ -20,6 +21,11 @@ multer({
 
 router.use(AuthService.verifyToken)
 router.use(requireAdmin)
+
+router.get('/policies', PolicyController.list)
+router.get('/policies/:policyId', PolicyController.getById)
+router.patch('/policies/:policyId', PolicyController.update)
+router.post('/policies/evaluate', PolicyController.evaluate)
 
 // add new genre
 router.post('/genres', GenreController.addGenre)

@@ -18,6 +18,7 @@ import MovieDetail from './pages/Movie/MovieDetail'
 import UploadMovie from './pages/Movie/UploadMovie'
 import AddVideo from './pages/Movie/AddVideo'
 import DetailVideoMovie from './pages/Movie/DetailVideoMovie'
+import Policies from './pages/Policies/Policies'
 import { useState } from 'react'
 
 function AdminShell() {
@@ -55,6 +56,7 @@ function App() {
                             <Route path="/them-dien-vien" element={<AddActor />} />
                             <Route path="/doi-ngu" element={<Director />} />
                             <Route path="/them-doi-ngu" element={<AddDirector />} />
+                            <Route path="/chinh-sach-xacml" element={<Policies />} />
                         </Route>
                     </Route>
                 </Routes>

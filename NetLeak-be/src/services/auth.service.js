@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken')
 const paymentModel = require('../models/payment.model')
 const userModel = require('../models/user.model')
-const getData = require('../utils/formatRes');
+const getData = require('../utils/formatRes')
+const PolicyService = require('./policy.service')
 
 class AuthService {
     static createAccessToken = (payload) => {
@@ -19,23 +20,42 @@ class AuthService {
     }
 
     static verifyToken = (req, res, next) => {
-        const token = req.headers['authorization']
-        if (token){
-            const accessToken = token.split(" ")[1]
+        ;(async () => {
+            let authPolicyEnforced = true
+            try {
+                authPolicyEnforced = await PolicyService.isPolicyEnabled(
+                    'POL_USER_AUTHENTICATED_ACCESS'
+                )
+            } catch (_) {
+                authPolicyEnforced = true
+            }
+            const denyMeta = () =>
+                authPolicyEnforced
+                    ? {
+                          policyId: 'POL_USER_AUTHENTICATED_ACCESS',
+                          decision: 'Deny'
+                      }
+                    : {}
+
+            const token = req.headers['authorization']
+            if (!token) {
+                return res.status(401).json({
+                    message: 'You are not authorized to access',
+                    ...denyMeta()
+                })
+            }
+            const accessToken = token.split(' ')[1]
             jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
                 if (err) {
                     return res.status(403).json({
-                        message: 'Invalid token'
+                        message: 'Invalid token',
+                        ...denyMeta()
                     })
                 }
-                req.user = user;
-                next();
+                req.user = user
+                next()
             })
-        }else{
-            return res.status(401).json({
-                message: 'You are not authorized to access'   
-            })
-        }
+        })().catch(next)
     }
     // [POST]v1/api/refreshToken
     static HandleRefreshToken = async (req,res) => {
